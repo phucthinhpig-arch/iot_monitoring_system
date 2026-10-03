@@ -16,3 +16,4 @@ endfunction()
 
 # Khai báo bài test cho HAL
 add_iot_test(test_hal test_hal_sim.c hal)
+add_iot_test(test_logger test_logger.c common hal)
