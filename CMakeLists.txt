@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(iot_monitor VERSION 1.0.0 LANGUAGES C)
 
+option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
+if(ENABLE_COVERAGE)
+    add_compile_options(--coverage -O0 -g)
+    add_link_options(--coverage)
+endif()
+
 # set(CMAKE_C_STANDARD 11)set(CMAKE_C_STANDARD 11)311
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
