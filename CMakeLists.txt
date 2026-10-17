@@ -40,3 +40,6 @@ add_subdirectory(app)
 
 enable_testing()
 add_subdirectory(test)
+
+add_executable(iot_app src/main.c)
+target_link_libraries(iot_app PRIVATE app)

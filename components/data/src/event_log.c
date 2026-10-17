@@ -1,6 +1,8 @@
 #include "event_log.h"
 #include "contract.h"
 #include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
 
 /* Cấp phát bộ nhớ tĩnh, không dùng malloc (Chuẩn MISRA Dir 4.12) */
 static event_node_t s_pool[EVENT_LOG_MAX_ENTRIES];
@@ -17,7 +19,6 @@ status_t event_log_add(const event_node_t *p_event) {
     
     event_node_t *p_new_node = NULL;
     
-    /* Lấy node từ Pool tĩnh, nếu đầy thì loại bỏ node cũ nhất (đuôi danh sách) để tái sử dụng */
     if (s_pool_index < EVENT_LOG_MAX_ENTRIES) {
         p_new_node = &s_pool[s_pool_index];
         s_pool_index++;
@@ -44,7 +45,6 @@ status_t event_log_add(const event_node_t *p_event) {
     p_new_node->value = p_event->value;
     p_new_node->p_next = NULL;
     
-    /* Chèn theo thứ tự Timestamp (Mới nhất nằm ở đầu mảng Head) */
     if ((s_p_head == NULL) || (p_new_node->timestamp >= s_p_head->timestamp)) {
         p_new_node->p_next = s_p_head;
         s_p_head = p_new_node;
@@ -71,5 +71,19 @@ uint32_t event_log_get_count(void) {
 }
 
 void event_log_print_all(void) {
-    /* Hàm in ra file Log sẽ được tích hợp ở Task 7 */
+    printf("\n--- EVENT LOG DUMP ---\n");
+    if (s_p_head == NULL) {
+        printf("Log is empty.\n");
+        return;
+    }
+    
+    event_node_t *p_curr = s_p_head;
+    while (p_curr != NULL) {
+        printf("[Time: %u ms] Type: %d, Value: %d\n", 
+               (unsigned int)p_curr->timestamp, 
+               (int)p_curr->type, 
+               (int)p_curr->value);
+        p_curr = p_curr->p_next;
+    }
+    printf("----------------------\n");
 }
