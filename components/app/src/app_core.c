@@ -2,6 +2,8 @@
 #include "sensor_mgr.h"
 #include "event_log.h"
 #include "telemetry.h"
+#include "data_proc.h"
+#include "common_types.h"
 #include "contract.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -11,6 +13,10 @@ static app_config_t *s_p_cfg = NULL;
 status_t app_core_init(app_config_t *p_config) {
     REQUIRE(p_config != NULL);
     s_p_cfg = p_config;
+    
+    /* Khởi tạo bộ lọc trung bình động với window_size = 5 */
+    data_proc_init(&s_p_cfg->temp_filter, 5);
+    data_proc_init(&s_p_cfg->humi_filter, 5);
     
     status_t err = sensor_mgr_init();
     if (err != STATUS_OK) { return err; }
